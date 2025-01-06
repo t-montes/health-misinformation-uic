@@ -1,0 +1,7 @@
+pandas
+polars
+openai
+together
+python-dotenv
+tqdm
+scikit-learn
