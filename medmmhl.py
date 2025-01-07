@@ -34,7 +34,9 @@ Answer in a JSON format with the following structure:
 
 # changing these lines will change the results file:
 VERSION_PROMPT = '1' 
-MODEL = "Qwen/QwQ-32B-Preview"
+MODEL = "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF"
+
+print(f"Executing medmmhl-v{VERSION_PROMPT} with model {MODEL}")
 
 # %%
 results_file = f"./results/medmmhl-v{VERSION_PROMPT}_{normalize_string(MODEL)}.csv"

@@ -42,6 +42,8 @@ Answer in a JSON format with the following structure:
 VERSION_PROMPT = '1' 
 MODEL = "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF"
 
+print(f"Executing monant-v{VERSION_PROMPT} with model {MODEL}")
+
 # %%
 results_file = f"./results/monant-v{VERSION_PROMPT}_{normalize_string(MODEL)}.csv"
 

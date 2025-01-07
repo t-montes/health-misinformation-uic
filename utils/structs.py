@@ -7,9 +7,6 @@ class Results():
     def __init__(self, filename:str, columns:list=[], sep:str=';', ids:list=[]):
         self.filename = filename
         self.ids = ids
-        # all columns that start with 'predicted_', without the 'predicted_' prefix
-        self.target = [col[10:] for col in columns if col.startswith('predicted_')]
-        self.sep = sep
 
         if not os.path.exists(filename):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -17,6 +14,9 @@ class Results():
                 f.write(sep.join(columns) + '\n')
 
         self.df = pd.read_csv(filename, sep=sep)
+        columns = self.df.columns
+        self.target = [col[10:] for col in columns if col.startswith('predicted_')]
+        self.sep = sep
     
     def add(self, data:dict):
         existing = self.get(*[data[id_col] for id_col in self.ids])
@@ -55,6 +55,20 @@ class Results():
                     txt = (f"[{time.strftime('%Y-%m-%d %H:%M:%S')}]:\n{txt}")
                     f.write(txt)
             print(txt)
+    
+    def get_macro_score(self):
+        y = self.df[self.target]
+        y_pred = self.df[[f'predicted_{col}' for col in self.target]]
+        macro = {}
+        for tg in self.target:
+            report = classification_report(y[tg], y_pred[f'predicted_{tg}'], zero_division=0, output_dict=True)
+            macro[tg] = {
+                "precision": round(report["macro avg"]["precision"], 2),
+                "recall": round(report["macro avg"]["recall"], 2),
+                "f1-score": round(report["macro avg"]["f1-score"], 2),
+                "accuracy": round(accuracy_score(y[tg], y_pred[f'predicted_{tg}']), 2)
+            }
+        return macro
 
     def get_tokens(self):
         return {

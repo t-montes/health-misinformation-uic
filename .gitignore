@@ -1,6 +1,7 @@
 *.env
 __pycache__
 data
+*.zip
 *test*
 *sample*
 !sample.env
