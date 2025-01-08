@@ -5,3 +5,5 @@ data
 *test*
 *sample*
 !sample.env
+results
+!results/.gitkeep

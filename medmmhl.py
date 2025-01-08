@@ -14,7 +14,7 @@ llm = LLM(
 # %%
 dataset_file = "./data/processed/medmmhl.csv"
 df = pd.read_csv(dataset_file)
-LIMIT = 100 # remove this line to process the entire dataset
+LIMIT = 2000 # remove this line to process the entire dataset
 df = df.head(LIMIT)
 df.loc[0]
 
@@ -34,7 +34,7 @@ Answer in a JSON format with the following structure:
 
 # changing these lines will change the results file:
 VERSION_PROMPT = '1' 
-MODEL = "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF"
+MODEL = "meta-llama/Llama-3.3-70B-Instruct-Turbo"
 
 print(f"Executing medmmhl-v{VERSION_PROMPT} with model {MODEL}")
 
@@ -61,11 +61,20 @@ for idx, row in tqdm(df.iterrows(), total=len(df)):
     try:
         result_txt, usage = llm(prompt, MODEL, SYSTEM_PROMPT, track_usage=True)
         result = extract_json(result_txt)
+        stance = result["stance"]
+        stance_reason = result["stance_reason"]
     except Exception as e:
         prompt = f"{SYSTEM_PROMPT}\n\n{prompt}"
-        result_txt, usage = llm(prompt, MODEL, track_usage=True, max_retries=10, retry_delay=15)
+        result_txt, usage_2 = llm(prompt, MODEL, track_usage=True, max_retries=10, retry_delay=15)
+        try:
+            usage["input"] += usage_2["input"]
+            usage["output"] += usage_2["output"]
+        except:
+            usage = usage_2
         try:
             result = extract_json(result_txt)
+            stance = result["stance"]
+            stance_reason = result["stance_reason"]
         except:
             result = {"stance": "error", "stance_reason": str(e)}
 

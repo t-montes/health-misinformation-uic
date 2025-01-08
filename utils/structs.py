@@ -59,6 +59,10 @@ class Results():
     def get_macro_score(self):
         y = self.df[self.target]
         y_pred = self.df[[f'predicted_{col}' for col in self.target]]
+
+        for tg in self.target:
+            y_pred.loc[:, f'predicted_{tg}'] = y_pred[f'predicted_{tg}'].fillna(y_pred[f'predicted_{tg}'].mode()[0])
+
         macro = {}
         for tg in self.target:
             report = classification_report(y[tg], y_pred[f'predicted_{tg}'], zero_division=0, output_dict=True)
