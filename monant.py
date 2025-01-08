@@ -9,6 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-m', type=str, required=True, help="LLM to use")
 parser.add_argument('-v', type=str, default='1', help="Execution version")
+parser.add_argument('-l', type=int, default=None, help="Limit of articles to process")
 args = parser.parse_args()
 
 load_dotenv()
@@ -21,8 +22,9 @@ llm = LLM(
 # %%
 dataset_file = "./data/processed/monant.csv"
 df = pd.read_csv(dataset_file)
-LIMIT = 500 # remove this line to process the entire dataset
-df = df.head(LIMIT)
+LIMIT = args.l
+if LIMIT:
+    df = df.head(LIMIT)
 df.loc[0]
 
 # %%
@@ -63,7 +65,7 @@ results = Results(
 print(f"{len(results.df)} results collected")
 
 # %%
-for idx, row in tqdm(df.iterrows(), total=len(df)):
+for idx, row in tqdm(df.iterrows(), total=len(df), desc=MODEL):
     article_id = row["articles_id"]
     claim_id = row["claims_id"]
     if results.get(article_id, claim_id):
