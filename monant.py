@@ -4,6 +4,13 @@ from utils import LLM, Results, extract_json, normalize_string
 import pandas as pd
 from tqdm import tqdm
 import os
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-m', type=str, required=True, help="LLM to use")
+parser.add_argument('-v', type=str, default='1', help="Execution version")
+args = parser.parse_args()
+
 load_dotenv()
 
 llm = LLM(
@@ -39,8 +46,8 @@ Answer in a JSON format with the following structure:
 """
 
 # changing these lines will change the results file:
-VERSION_PROMPT = '1' 
-MODEL = "Qwen/QwQ-32B-Preview"
+VERSION_PROMPT = args.v
+MODEL = args.m
 
 print(f"Executing monant-v{VERSION_PROMPT} with model {MODEL}")
 
