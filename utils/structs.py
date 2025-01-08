@@ -46,6 +46,9 @@ class Results():
         y_pred = self.df[[f'predicted_{col}' for col in self.target]]
 
         for tg in self.target:
+            y_pred.loc[:, f'predicted_{tg}'] = y_pred[f'predicted_{tg}'].fillna(y_pred[f'predicted_{tg}'].mode()[0])
+
+        for tg in self.target:
             txt = (f"----------- {tg} -----------\n")
             txt += (f"Confusion Matrix:\n{confusion_matrix(y[tg], y_pred[f'predicted_{tg}'])}")
             txt += (f"\n{classification_report(y[tg], y_pred[f'predicted_{tg}'], zero_division=0)}")

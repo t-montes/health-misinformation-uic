@@ -14,6 +14,7 @@ prices = {
 }
 
 files = os.listdir('results')
+files.sort()
 for fpath in files:
     if not fpath.endswith('.csv'):
         continue
